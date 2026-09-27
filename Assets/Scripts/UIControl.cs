@@ -38,9 +38,24 @@ public class UIControl : MonoBehaviour
             return;
         }
 
-        button.onClick.RemoveListener(OnClickStart);
-        button.onClick.AddListener(OnClickStart);
-        Debug.Log("[UIControl] 已为按钮 \"" + button.name + "\" 绑定点击跳转事件。");
+        // Avoid loading the scene twice when a valid Inspector-persistent handler
+        // is already wired, but keep the runtime fallback for missing or bad targets.
+        bool hasValidStartHandler = false;
+        for (int i = 0; i < button.onClick.GetPersistentEventCount(); i++)
+        {
+            if (button.onClick.GetPersistentTarget(i) is UIControl
+                && button.onClick.GetPersistentMethodName(i) == nameof(OnClickStart))
+            {
+                hasValidStartHandler = true;
+                break;
+            }
+        }
+
+        if (!hasValidStartHandler)
+        {
+            button.onClick.AddListener(OnClickStart);
+            Debug.Log("[UIControl] 已为按钮 \"" + button.name + "\" 添加运行时跳转绑定。");
+        }
     }
 
     /// <summary>
