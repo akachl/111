@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b2c82058cb82204a84144ae4192c470, type: 3}
+  m_Name: Memory04
+  m_EditorClassIdentifier: 
+  id: 4
+  title: "\u8DCC\u5012\u4EE5\u540E"
+  content: "\u5C0F\u65F6\u5019\uFF0C\u6211\u8FFD\u7740\u98DE\u8FDC\u7684\u98CE\u7B5D\u8DD1\uFF0C\u5728\u5761\u4E0A\u6454\u7834\u4E86\u819D\u76D6\u3002\u63D0\u706F\u7684\u8001\u4EBA\u66FF\u6211\u6D17\u51C0\u4F24\u53E3\uFF0C\u5750\u4E0B\u6765\u966A\u6211\u6B47\u4E86\u4E00\u4F1A\u513F\u3002\u7B49\u773C\u6CEA\u505C\u4E86\uFF0C\u4ED6\u95EE\uFF1A\"\u8FD8\u60F3\u53BB\u627E\u5417\uFF1F\"\u6211\u70B9\u70B9\u5934\uFF0C\u6276\u7740\u4ED6\u7684\u80A9\u7AD9\u8D77\u6765\u3002\u98CE\u7B5D\u8FD8\u6302\u5728\u4E0D\u8FDC\u5904\u7684\u6811\u4E0A\u3002"

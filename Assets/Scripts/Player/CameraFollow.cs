@@ -17,6 +17,7 @@ public class CameraFollow : MonoBehaviour
     private bool visualHidden;
     private float pitch;
     private bool cursorLocked;
+    private bool menuOpen;
 
     private void Awake()
     {
@@ -51,7 +52,8 @@ public class CameraFollow : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (menuOpen || SettingsMenu.IsGameplayBlocked) return;
+        if (SettingsMenu.Instance == null && Input.GetKeyDown(KeyCode.Escape))
         {
             UnlockCursor();
             return;
@@ -104,6 +106,13 @@ public class CameraFollow : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         cursorLocked = true;
+    }
+
+    /// <summary>设置菜单独占鼠标，关闭菜单后恢复第一人称操作。</summary>
+    public void SetMenuOpen(bool value)
+    {
+        menuOpen = value;
+        if (value) UnlockCursor(); else LockCursor();
     }
 
     private void UnlockCursor()

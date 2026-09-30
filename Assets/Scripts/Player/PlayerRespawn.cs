@@ -19,6 +19,7 @@ public class PlayerRespawn : MonoBehaviour
 
     private void Update()
     {
+        if (SettingsMenu.IsGameplayBlocked) return;
         if (respawnPoint != null && transform.position.y < fallY)
         {
             Respawn();

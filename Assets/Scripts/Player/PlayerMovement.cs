@@ -27,7 +27,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        if (controller == null || !controller.enabled)
+        if (SettingsMenu.IsGameplayBlocked || controller == null || !controller.enabled)
         {
             return;
         }

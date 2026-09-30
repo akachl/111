@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b2c82058cb82204a84144ae4192c470, type: 3}
+  m_Name: Memory06
+  m_EditorClassIdentifier: 
+  id: 6
+  title: "\u96E8\u591C\u7684\u95E8"
+  content: "\u6211\u7EC8\u4E8E\u60F3\u8D77\uFF0C\u90A3\u4F4D\u8001\u4EBA\u53EB\u963F\u9065\u3002\u7B2C\u4E00\u6B21\u89C1\u5230\u4ED6\uFF0C\u662F\u5728\u706F\u5854\u95E8\u5916\u7684\u96E8\u591C\u3002\u6211\u7F29\u5728\u5C4B\u6A90\u4E0B\uFF0C\u8863\u670D\u6E7F\u900F\u4E86\u3002\u4ED6\u6CA1\u6709\u6025\u7740\u95EE\u6211\u4ECE\u54EA\u91CC\u6765\uFF0C\u5148\u62FF\u6765\u4E00\u6761\u5E72\u6BDB\u5DFE\uFF0C\u53C8\u628A\u95E8\u63A8\u5F00\u4E9B\uFF1A\"\u5148\u8FDB\u6765\u5427\uFF0C\u6C64\u8FD8\u662F\u70ED\u7684\u3002\""
