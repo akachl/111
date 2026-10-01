@@ -9,7 +9,7 @@ public sealed class SettingsMenu : MonoBehaviour
 {
     public static SettingsMenu Instance { get; private set; }
     public static bool IsPaused => Instance != null && Instance.open;
-    public static bool IsGameplayBlocked => IsPaused || (Instance != null && Instance.resumeFrame == Time.frameCount);
+    public static bool IsGameplayBlocked => GameplayPause.IsBlocked;
     public GameObject settingsPanel;
     public Button settingsButton;
     public Button continueButton;
@@ -53,7 +53,8 @@ public sealed class SettingsMenu : MonoBehaviour
     {
         if (open) return;
         open = true;
-        Time.timeScale = 0f;
+        GameplayPause.Set(this, true);
+        if (TeleportUI.Instance != null) TeleportUI.Instance.Close();
         settingsPanel.SetActive(true);
         if (dialogue != null) dialogue.SetSettingsCovered(true);
         hud.interactable = false;
@@ -71,12 +72,12 @@ public sealed class SettingsMenu : MonoBehaviour
     {
         open = false;
         resumeFrame = Time.frameCount;
-        Time.timeScale = 1f;
+        GameplayPause.Set(this, false);
         settingsPanel.SetActive(false);
         if (dialogue != null) dialogue.SetSettingsCovered(false);
         hud.interactable = true;
         hud.blocksRaycasts = true;
-        if (cameraController != null) cameraController.SetMenuOpen(!lockCursor);
+        if (cameraController != null) cameraController.SetMenuOpen(GameplayPause.IsPaused || !lockCursor);
         PlayerPrefs.Save();
     }
 
@@ -94,13 +95,13 @@ public sealed class SettingsMenu : MonoBehaviour
     private void OnDisable()
     {
         if (Instance != this) return;
-        if (open) RestorePauseState(false);
+        if (open) RestorePauseState(true);
     }
 
     private void OnDestroy()
     {
         if (Instance != this) return;
-        Time.timeScale = 1f;
+        // OnDisable 已释放自身暂停，不能覆盖仍由传送面板持有的暂停。
         Instance = null;
     }
 }

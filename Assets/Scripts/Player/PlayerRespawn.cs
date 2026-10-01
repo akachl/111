@@ -1,7 +1,7 @@
 using UnityEngine;
 
 /// <summary>
-/// 在玩家掉落到低于关卡后，将其返回到安全的起始点。
+/// 玩家掉到关卡下方时回到当前岛安全落点，保留收集进度与能力。
 /// </summary>
 public class PlayerRespawn : MonoBehaviour
 {
@@ -26,23 +26,32 @@ public class PlayerRespawn : MonoBehaviour
         }
     }
 
-    private void Respawn()
+    public void Respawn()
     {
+        if (respawnPoint != null) MoveTo(respawnPoint);
+    }
+
+    /// <summary>禁用控制器后移动到安全落点，并清除上一地点的运动状态。</summary>
+    public void MoveTo(Transform point)
+    {
+        if (point == null) return;
+        bool wasEnabled = controller != null && controller.enabled;
         if (controller != null)
         {
             controller.enabled = false;
         }
 
-        transform.SetPositionAndRotation(respawnPoint.position, respawnPoint.rotation);
+        transform.SetPositionAndRotation(point.position, point.rotation);
 
         if (playerMovement != null)
         {
-            playerMovement.verticalVelocity = 0f;
+            playerMovement.ResetMotion();
         }
 
         if (controller != null)
         {
-            controller.enabled = true;
+            controller.enabled = wasEnabled;
         }
+        Physics.SyncTransforms();
     }
 }

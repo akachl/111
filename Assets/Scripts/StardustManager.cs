@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -14,6 +15,21 @@ public sealed class StardustManager : MonoBehaviour
     private readonly HashSet<int> collected = new HashSet<int>();
     private readonly Dictionary<int, StardustMemoryData> catalog = new Dictionary<int, StardustMemoryData>();
     public int Count => collected.Count;
+    public event Action<int> ProgressChanged;
+
+    /// <summary>按固定编号区间统计本岛，不能用总数代替前两岛完整条件。</summary>
+    public int GetIslandCount(int island)
+    {
+        int first = island == 1 ? 1 : island == 2 ? 6 : island == 3 ? 14 : 0;
+        if (first == 0) return 0;
+        int last = island == 1 ? 5 : island == 2 ? 13 : 23;
+        int count = 0;
+        for (int id = first; id <= last; id++) if (collected.Contains(id)) count++;
+        return count;
+    }
+    public static int IslandTotal(int island) => island == 1 ? 5 : island == 2 ? 8 : island == 3 ? 10 : 0;
+    public bool IsIslandComplete(int island) => IslandTotal(island) > 0 && GetIslandCount(island) == IslandTotal(island);
+    public bool HasCollected(int id) => collected.Contains(id);
 
     private void Awake()
     {
@@ -43,6 +59,7 @@ public sealed class StardustManager : MonoBehaviour
         if (Count >= Total || !collected.Add(memory.id)) return false;
         UpdateCounter();
         if (dialogue != null) dialogue.Enqueue(entry);
+        ProgressChanged?.Invoke(memory.id);
         return true;
     }
 
