@@ -1,15 +1,16 @@
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 /// <summary>
-/// Controls the start scene's audio settings panel. UI references are serialized
-/// so the panel and its behavior remain editable in the Unity Inspector.
+/// 管理开始界面的音频设置，支持独立返回按钮，并兼容原菜单按钮返回方式。
 /// </summary>
 public sealed class StartMenuAudioSettings : MonoBehaviour
 {
-    [Header("Menu")]
+    [Header("菜单")]
     public Button startButton;
     public Button settingsButton;
     public TMP_Text settingsButtonLabel;
@@ -17,16 +18,23 @@ public sealed class StartMenuAudioSettings : MonoBehaviour
     public Vector2 menuSettingsPosition;
     public Vector2 panelReturnPosition;
     public int menuSettingsSiblingIndex;
+    public Button closeButton;
+    public CanvasGroup menuGroup;
 
-    [Header("Audio controls")]
+    [Header("音频控制")]
     public Slider musicSlider;
     public TMP_Text musicPercentLabel;
     public Slider sfxSlider;
     public TMP_Text sfxPercentLabel;
     public AudioMixer audioMixer;
 
+    public bool IsSettingsOpen => settingsOpen;
+    public bool UsesSeparateCloseButton => closeButton != null;
+
     private RectTransform settingsButtonRect;
     private bool settingsOpen;
+    private UnityAction<float> musicValueChanged;
+    private UnityAction<float> sfxValueChanged;
 
     private void Start()
     {
@@ -36,6 +44,11 @@ public sealed class StartMenuAudioSettings : MonoBehaviour
         {
             settingsButtonRect = settingsButton.GetComponent<RectTransform>();
             settingsButton.onClick.AddListener(ToggleSettings);
+        }
+
+        if (closeButton != null)
+        {
+            closeButton.onClick.AddListener(CloseSettings);
         }
 
         ConfigureSlider(musicSlider, StartAudioMixerService.MusicPreferenceKey, musicPercentLabel, true);
@@ -53,7 +66,7 @@ public sealed class StartMenuAudioSettings : MonoBehaviour
     {
         if (settingsOpen && Input.GetKeyDown(KeyCode.Escape))
         {
-            SetSettingsOpen(false);
+            CloseSettings();
         }
     }
 
@@ -81,7 +94,7 @@ public sealed class StartMenuAudioSettings : MonoBehaviour
             StartAudioMixerService.SetSfxPercent(initialValue, false);
         }
 
-        slider.onValueChanged.AddListener(value =>
+        UnityAction<float> valueChanged = value =>
         {
             int percent = Mathf.Clamp(Mathf.RoundToInt(value), 0, 100);
             UpdatePercentLabel(percentLabel, percent);
@@ -94,7 +107,16 @@ public sealed class StartMenuAudioSettings : MonoBehaviour
             {
                 StartAudioMixerService.SetSfxPercent(percent, false);
             }
-        });
+        };
+        slider.onValueChanged.AddListener(valueChanged);
+        if (music)
+        {
+            musicValueChanged = valueChanged;
+        }
+        else
+        {
+            sfxValueChanged = valueChanged;
+        }
     }
 
     private static void UpdatePercentLabel(TMP_Text label, float value)
@@ -110,6 +132,12 @@ public sealed class StartMenuAudioSettings : MonoBehaviour
         SetSettingsOpen(!settingsOpen);
     }
 
+    /// <summary>关闭音频设置并将键盘焦点恢复到设置按钮。</summary>
+    public void CloseSettings()
+    {
+        SetSettingsOpen(false);
+    }
+
     private void SetSettingsOpen(bool open)
     {
         bool wasOpen = settingsOpen;
@@ -120,34 +148,46 @@ public sealed class StartMenuAudioSettings : MonoBehaviour
             settingsPanel.SetActive(open);
         }
 
-        if (startButton != null)
+        if (UsesSeparateCloseButton)
         {
-            startButton.gameObject.SetActive(!open);
+            // 独立返回模式保持菜单可见，仅禁止被弹窗覆盖的菜单接收输入。
+            if (menuGroup != null)
+            {
+                menuGroup.interactable = !open;
+                menuGroup.blocksRaycasts = !open;
+            }
         }
-
-        if (settingsButton != null)
+        else
         {
-            if (settingsButtonLabel != null)
+            if (startButton != null)
             {
-                settingsButtonLabel.text = open ? "返回" : "设置";
+                startButton.gameObject.SetActive(!open);
             }
 
-            if (settingsButtonRect == null)
+            if (settingsButton != null)
             {
-                settingsButtonRect = settingsButton.GetComponent<RectTransform>();
-            }
-
-            if (settingsButtonRect != null)
-            {
-                settingsButtonRect.anchoredPosition = open ? panelReturnPosition : menuSettingsPosition;
-                if (open)
+                if (settingsButtonLabel != null)
                 {
-                    settingsButtonRect.SetAsLastSibling();
+                    settingsButtonLabel.text = open ? "返回" : "设置";
                 }
-                else
+
+                if (settingsButtonRect == null)
                 {
-                    int siblingIndex = Mathf.Clamp(menuSettingsSiblingIndex, 0, settingsButtonRect.parent.childCount - 1);
-                    settingsButtonRect.SetSiblingIndex(siblingIndex);
+                    settingsButtonRect = settingsButton.GetComponent<RectTransform>();
+                }
+
+                if (settingsButtonRect != null)
+                {
+                    settingsButtonRect.anchoredPosition = open ? panelReturnPosition : menuSettingsPosition;
+                    if (open)
+                    {
+                        settingsButtonRect.SetAsLastSibling();
+                    }
+                    else if (settingsButtonRect.parent != null)
+                    {
+                        int siblingIndex = Mathf.Clamp(menuSettingsSiblingIndex, 0, settingsButtonRect.parent.childCount - 1);
+                        settingsButtonRect.SetSiblingIndex(siblingIndex);
+                    }
                 }
             }
         }
@@ -155,6 +195,38 @@ public sealed class StartMenuAudioSettings : MonoBehaviour
         if (wasOpen && !open)
         {
             PlayerPrefs.Save();
+        }
+
+        if (open != wasOpen && EventSystem.current != null)
+        {
+            Selectable focus = open ? (Selectable)musicSlider : settingsButton;
+            if (focus != null && focus.IsActive() && focus.IsInteractable())
+            {
+                EventSystem.current.SetSelectedGameObject(focus.gameObject);
+            }
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (settingsButton != null)
+        {
+            settingsButton.onClick.RemoveListener(ToggleSettings);
+        }
+
+        if (closeButton != null)
+        {
+            closeButton.onClick.RemoveListener(CloseSettings);
+        }
+
+        if (musicSlider != null && musicValueChanged != null)
+        {
+            musicSlider.onValueChanged.RemoveListener(musicValueChanged);
+        }
+
+        if (sfxSlider != null && sfxValueChanged != null)
+        {
+            sfxSlider.onValueChanged.RemoveListener(sfxValueChanged);
         }
     }
 
@@ -165,8 +237,7 @@ public sealed class StartMenuAudioSettings : MonoBehaviour
 }
 
 /// <summary>
-/// Shared volume service for every scene. It restores the saved mixer levels
-/// before the first scene loads and provides a small routing API for later audio.
+/// 为各场景共享音量偏好与混音器设置，并为音源提供音乐或音效分组路由。
 /// </summary>
 public static class StartAudioMixerService
 {
@@ -251,7 +322,7 @@ public static class StartAudioMixerService
             : Mathf.Max(MinimumDecibels, 20f * Mathf.Log10(normalized));
         if (!mixer.SetFloat(parameter, decibels) || !mixer.GetFloat(parameter, out _))
         {
-            Debug.LogError("AudioMixer could not read or set the exposed parameter '" + parameter + "'. Check the StarIsleAudio mixer asset.");
+            Debug.LogError("无法读取或设置混音器公开参数“" + parameter + "”，请检查 StarIsleAudio 混音器资源。");
         }
     }
 
