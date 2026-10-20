@@ -2,17 +2,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-/// <summary>
-/// 开始按钮的控制脚本：点击按钮后跳转到游戏场景（默认 "game"）。
-///
-/// 使用方式（二选一，都支持）：
-/// 1. 挂在 "Button"（开始游戏）物体上；
-/// 2. 挂在 Canvas 上。
-/// 出于稳妥，Start() 里会自动找到开始按钮并绑定点击事件，
-/// 因此不需要在 Inspector 里手动拖拽 OnClick。
-/// 另需确保没有别的全屏 UI（如背景 Image）盖在按钮上方，
-/// 否则点击会被它拦截（把它的 Raycast Target 取消勾选即可）。
-/// </summary>
 public class UIControl : MonoBehaviour
 {
     [Tooltip("点击开始按钮后要进入的场景名，需已加入 Build Settings")]
@@ -58,17 +47,11 @@ public class UIControl : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 点击"开始"按钮时调用，跳转到 game 场景。
-    /// </summary>
     public void OnClickStart()
     {
         LoadGameScene();
     }
 
-    /// <summary>
-    /// 加载游戏场景。场景名留空时回退为 "game"。
-    /// </summary>
     public void LoadGameScene()
     {
         string sceneName = string.IsNullOrEmpty(gameSceneName) ? "game" : gameSceneName;

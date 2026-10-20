@@ -3,7 +3,6 @@ using System;
 using TMPro;
 using UnityEngine;
 
-/// <summary>仅记录本次游戏的记忆，按编号去重，并通知计数和记忆界面。</summary>
 [DisallowMultipleComponent]
 public sealed class StardustManager : MonoBehaviour
 {
@@ -17,7 +16,6 @@ public sealed class StardustManager : MonoBehaviour
     public int Count => collected.Count;
     public event Action<int> ProgressChanged;
 
-    /// <summary>按固定编号区间统计本岛，不能用总数代替前两岛完整条件。</summary>
     public int GetIslandCount(int island)
     {
         int first = island == 1 ? 1 : island == 2 ? 6 : island == 3 ? 14 : 0;
@@ -58,7 +56,8 @@ public sealed class StardustManager : MonoBehaviour
         if (Instance != this || memory == null || !catalog.TryGetValue(memory.id, out StardustMemoryData entry)) return false;
         if (Count >= Total || !collected.Add(memory.id)) return false;
         UpdateCounter();
-        if (dialogue != null) dialogue.Enqueue(entry);
+        if (dialogue != null) dialogue.ShowLatest(entry);
+        GameplayOneShotAudio.PlayStardust();
         ProgressChanged?.Invoke(memory.id);
         return true;
     }

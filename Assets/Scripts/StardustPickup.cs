@@ -1,9 +1,6 @@
 using System.Collections;
 using UnityEngine;
 
-/// <summary>
-/// 玩家碰到星尘时只拾取一次，播放粒子反馈后移除实例。
-/// </summary>
 public sealed class StardustPickup : MonoBehaviour
 {
     [SerializeField] private GameObject model;

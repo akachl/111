@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-/// <summary>管理游戏设置、暂停、光标及返回开始场景，状态只属于本次游戏。</summary>
 [DefaultExecutionOrder(-200)]
 [DisallowMultipleComponent]
 public sealed class SettingsMenu : MonoBehaviour

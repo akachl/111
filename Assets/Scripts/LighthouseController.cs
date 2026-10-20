@@ -1,6 +1,5 @@
 using UnityEngine;
 
-/// <summary>本岛集齐后只播放一次渐亮与扩散环，之后维持暖白灯芯和上半塔身稀疏金色光点。</summary>
 public sealed class LighthouseController : MonoBehaviour
 {
     [Range(1, 3)] public int island = 1;
@@ -49,6 +48,7 @@ public sealed class LighthouseController : MonoBehaviour
         lit = true;
         elapsed = 0f;
         IgnitionCount++;
+        GameplayOneShotAudio.PlayLighthouse();
         steadyParticles.Play();
         ignitionParticles.Play();
         halo.Play();

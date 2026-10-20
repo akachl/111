@@ -5,19 +5,12 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-/// <summary>
-/// 管理开始界面的音频设置，支持独立返回按钮，并兼容原菜单按钮返回方式。
-/// </summary>
 public sealed class StartMenuAudioSettings : MonoBehaviour
 {
     [Header("菜单")]
     public Button startButton;
     public Button settingsButton;
-    public TMP_Text settingsButtonLabel;
     public GameObject settingsPanel;
-    public Vector2 menuSettingsPosition;
-    public Vector2 panelReturnPosition;
-    public int menuSettingsSiblingIndex;
     public Button closeButton;
     public CanvasGroup menuGroup;
 
@@ -29,9 +22,6 @@ public sealed class StartMenuAudioSettings : MonoBehaviour
     public AudioMixer audioMixer;
 
     public bool IsSettingsOpen => settingsOpen;
-    public bool UsesSeparateCloseButton => closeButton != null;
-
-    private RectTransform settingsButtonRect;
     private bool settingsOpen;
     private UnityAction<float> musicValueChanged;
     private UnityAction<float> sfxValueChanged;
@@ -42,7 +32,6 @@ public sealed class StartMenuAudioSettings : MonoBehaviour
 
         if (settingsButton != null)
         {
-            settingsButtonRect = settingsButton.GetComponent<RectTransform>();
             settingsButton.onClick.AddListener(ToggleSettings);
         }
 
@@ -132,7 +121,6 @@ public sealed class StartMenuAudioSettings : MonoBehaviour
         SetSettingsOpen(!settingsOpen);
     }
 
-    /// <summary>关闭音频设置并将键盘焦点恢复到设置按钮。</summary>
     public void CloseSettings()
     {
         SetSettingsOpen(false);
@@ -148,48 +136,11 @@ public sealed class StartMenuAudioSettings : MonoBehaviour
             settingsPanel.SetActive(open);
         }
 
-        if (UsesSeparateCloseButton)
+        // 保持主菜单可见，仅阻止弹窗下方的菜单接收输入。
+        if (menuGroup != null)
         {
-            // 独立返回模式保持菜单可见，仅禁止被弹窗覆盖的菜单接收输入。
-            if (menuGroup != null)
-            {
-                menuGroup.interactable = !open;
-                menuGroup.blocksRaycasts = !open;
-            }
-        }
-        else
-        {
-            if (startButton != null)
-            {
-                startButton.gameObject.SetActive(!open);
-            }
-
-            if (settingsButton != null)
-            {
-                if (settingsButtonLabel != null)
-                {
-                    settingsButtonLabel.text = open ? "返回" : "设置";
-                }
-
-                if (settingsButtonRect == null)
-                {
-                    settingsButtonRect = settingsButton.GetComponent<RectTransform>();
-                }
-
-                if (settingsButtonRect != null)
-                {
-                    settingsButtonRect.anchoredPosition = open ? panelReturnPosition : menuSettingsPosition;
-                    if (open)
-                    {
-                        settingsButtonRect.SetAsLastSibling();
-                    }
-                    else if (settingsButtonRect.parent != null)
-                    {
-                        int siblingIndex = Mathf.Clamp(menuSettingsSiblingIndex, 0, settingsButtonRect.parent.childCount - 1);
-                        settingsButtonRect.SetSiblingIndex(siblingIndex);
-                    }
-                }
-            }
+            menuGroup.interactable = !open;
+            menuGroup.blocksRaycasts = !open;
         }
 
         if (wasOpen && !open)
@@ -236,9 +187,6 @@ public sealed class StartMenuAudioSettings : MonoBehaviour
     }
 }
 
-/// <summary>
-/// 为各场景共享音量偏好与混音器设置，并为音源提供音乐或音效分组路由。
-/// </summary>
 public static class StartAudioMixerService
 {
     public const string MusicPreferenceKey = "StarIsle.Audio.Music";

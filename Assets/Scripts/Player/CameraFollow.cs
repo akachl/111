@@ -1,8 +1,5 @@
 using UnityEngine;
 
-/// <summary>
-/// 第一人称视角的鼠标查看和光标控制，用于玩家摄像机。
-/// </summary>
 [DefaultExecutionOrder(-100)]
 public class CameraFollow : MonoBehaviour
 {
@@ -108,7 +105,6 @@ public class CameraFollow : MonoBehaviour
         cursorLocked = true;
     }
 
-    /// <summary>设置菜单独占鼠标，关闭菜单后恢复第一人称操作。</summary>
     public void SetMenuOpen(bool value)
     {
         menuOpen = value;

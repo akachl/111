@@ -3,7 +3,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-/// <summary>管理开始界面的退出确认、菜单焦点和弹窗内键盘循环导航。</summary>
 [DisallowMultipleComponent]
 public sealed class StartMenuPresentation : MonoBehaviour
 {
@@ -71,7 +70,6 @@ public sealed class StartMenuPresentation : MonoBehaviour
         }
     }
 
-    /// <summary>打开退出确认，并将焦点放在取消按钮，避免误退出。</summary>
     public void OpenExit()
     {
         if (exitOpen || exitPanel == null)
@@ -90,7 +88,6 @@ public sealed class StartMenuPresentation : MonoBehaviour
         Focus(cancelExitButton);
     }
 
-    /// <summary>关闭退出确认并恢复退出按钮的键盘焦点。</summary>
     public void CloseExit()
     {
         if (!exitOpen)
@@ -108,7 +105,6 @@ public sealed class StartMenuPresentation : MonoBehaviour
         Focus(exitButton);
     }
 
-    /// <summary>保存音量偏好后退出；编辑器只停止运行，打包游戏则关闭程序。</summary>
     public void ConfirmExit()
     {
         if (!exitOpen)
@@ -153,7 +149,7 @@ public sealed class StartMenuPresentation : MonoBehaviour
         {
             AddFocusTarget(audioSettings.musicSlider);
             AddFocusTarget(audioSettings.sfxSlider);
-            AddFocusTarget(audioSettings.UsesSeparateCloseButton ? audioSettings.closeButton : audioSettings.settingsButton);
+            AddFocusTarget(audioSettings.closeButton);
         }
         else
         {

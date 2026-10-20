@@ -2,7 +2,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-/// <summary>靠近灯塔按 F 打开目的地，设置菜单优先，E 保留给记忆阅读。</summary>
 [DefaultExecutionOrder(-150)]
 public sealed class TeleportUI : MonoBehaviour
 {

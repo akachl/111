@@ -10,3 +10,21 @@
 *.sln
 *.unityproj
 *.suo
+
+# 本地编辑器配置与个人设置
+.idea/
+.vscode/
+*.user
+*.userprefs
+*.log
+
+# 本地凭据、签名与环境变量
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.keystore
+*.jks

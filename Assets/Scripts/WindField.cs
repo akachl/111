@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>用实际区域查询提供托举，禁用、销毁和传送均不会留下触发器登记。</summary>
 [RequireComponent(typeof(BoxCollider))]
 public sealed class WindField : MonoBehaviour
 {

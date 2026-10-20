@@ -9,7 +9,6 @@ using UnityEngine.TextCore.LowLevel;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-/// <summary>将已确认的花谷设计接入真实开始场景，保留原界面与既有游戏、音频绑定。</summary>
 [InitializeOnLoad]
 public static class StartMenuMorningFogBuilder
 {
@@ -61,7 +60,7 @@ public static class StartMenuMorningFogBuilder
         Canvas canvas = scene.GetRootGameObjects().SelectMany(g => g.GetComponentsInChildren<Canvas>(true)).Single();
         StartMenuAudioSettings audio = canvas.GetComponent<StartMenuAudioSettings>();
         if (audio == null || audio.startButton == null || audio.settingsButton == null || audio.audioMixer == null)
-            throw new InvalidOperationException("开始界面原有绑定不完整，不能直接改造。");
+            throw new InvalidOperationException("开始界面的游戏和音频绑定不完整，无法应用设计。");
         Directory.CreateDirectory(Output + "/备份");
         if (!File.Exists(Output + "/备份/start_内存场景.unity") && !EditorSceneManager.SaveScene(scene, Output + "/备份/start_内存场景.unity", true))
             throw new InvalidOperationException("开始界面内存备份失败。");
@@ -82,16 +81,7 @@ public static class StartMenuMorningFogBuilder
         canvas.vertexColorAlwaysGammaSpace = false;
 
         RectTransform canvasRect = (RectTransform)canvas.transform;
-        RectTransform main = FindRect(canvasRect, "花谷主菜单");
-        if (main == null)
-        {
-            Transform[] oldChildren = canvasRect.Cast<Transform>().ToArray();
-            RectTransform legacy = Rect(canvasRect, "旧版开始界面_保留");
-            Stretch(legacy);
-            foreach (Transform child in oldChildren) child.SetParent(legacy, false);
-            legacy.gameObject.SetActive(false);
-            main = Rect(canvasRect, "花谷主菜单");
-        }
+        RectTransform main = Rect(canvasRect, "花谷主菜单");
         Stretch(main);
         CanvasGroup menuGroup = Get<CanvasGroup>(main.gameObject);
         menuGroup.alpha = 1;
@@ -131,7 +121,6 @@ public static class StartMenuMorningFogBuilder
         audio.closeButton = close;
         audio.menuGroup = menuGroup;
         audio.settingsPanel = settingsOverlay.gameObject;
-        audio.settingsButtonLabel = audio.settingsButton.GetComponentInChildren<TMP_Text>(true);
         settingsOverlay.gameObject.SetActive(false);
 
         RectTransform exitOverlay = Overlay(canvasRect, "退出确认弹窗");
@@ -163,12 +152,12 @@ public static class StartMenuMorningFogBuilder
             scene = scene.path, background = BackgroundPath, font = AssetDatabase.GetAssetPath(menuFont),
             startHandler = audio.startButton.GetComponent<UIControl>().gameSceneName,
             startPersistentHandlers = audio.startButton.onClick.GetPersistentEventCount(),
-            mixer = AssetDatabase.GetAssetPath(audio.audioMixer), legacyPreserved = main.parent.Find("旧版开始界面_保留") != null
+            mixer = AssetDatabase.GetAssetPath(audio.audioMixer)
         }, true));
         Debug.Log("花谷开始界面已保存：独立标题、无图标文字菜单、音频设置和退出确认已接入。");
     }
 
-    [Serializable] private class BuildRecord { public string scene, background, font, startHandler, mixer; public int startPersistentHandlers; public bool legacyPreserved; }
+    [Serializable] private class BuildRecord { public string scene, background, font, startHandler, mixer; public int startPersistentHandlers; }
     private static Color Hex(string value) { ColorUtility.TryParseHtmlString("#" + value, out Color color); return color; }
     private static T Get<T>(GameObject go) where T : Component
     {
@@ -351,7 +340,6 @@ public static class StartMenuMorningFogBuilder
         importer.SaveAndReimport();
         return AssetDatabase.LoadAssetAtPath<Sprite>(path);
     }
-    /// <summary>程序绘制柔光与装饰形状，背景始终使用交接指定的原始 PNG。</summary>
     private static Sprite CreateShape(string name, int width, int height, bool gradient, bool decoration)
     {
         string path = ResourceFolder + "/" + name + ".png";

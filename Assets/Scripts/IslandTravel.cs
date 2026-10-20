@@ -1,6 +1,5 @@
 using UnityEngine;
 
-/// <summary>本次游戏的当前岛屿、传送权限与首次第三岛到达能力解锁。</summary>
 public sealed class IslandTravel : MonoBehaviour
 {
     public PlayerRespawn player;

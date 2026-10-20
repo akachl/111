@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>统一管理设置与传送的暂停所有权，以及恢复当帧的输入屏蔽。</summary>
 public static class GameplayPause
 {
     private static readonly HashSet<Object> owners = new HashSet<Object>();

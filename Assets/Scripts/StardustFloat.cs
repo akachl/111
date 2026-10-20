@@ -1,8 +1,5 @@
 using UnityEngine;
 
-/// <summary>
-/// 让星尘外观上下漂浮并缓慢旋转，碰撞范围保持在原位。
-/// </summary>
 public sealed class StardustFloat : MonoBehaviour
 {
     [SerializeField] private Transform model;

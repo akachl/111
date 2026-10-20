@@ -1,8 +1,5 @@
 using UnityEngine;
 
-/// <summary>
-/// 玩家的相机相对移动、跳跃、风场托举与解锁后的下降滑翔。
-/// </summary>
 public class PlayerMovement : MonoBehaviour
 {
     public CharacterController controller;
@@ -21,7 +18,6 @@ public class PlayerMovement : MonoBehaviour
     private bool ceilingBlocked;
 
     public void UnlockGlide() { GlideUnlocked = true; }
-    /// <summary>复位及传送只清理运动，保留本次游戏已经解锁的滑翔能力。</summary>
     public void ResetMotion()
     {
         verticalVelocity = 0f;
@@ -85,7 +81,6 @@ public class PlayerMovement : MonoBehaviour
         StepMovement(moveDirection, Input.GetButton("Jump"), Time.deltaTime);
     }
 
-    /// <summary>风力、滑翔和重力共用一次位移入口，便于实际物理场景验证。</summary>
     public void StepMovement(Vector3 direction, bool holdJump, float deltaTime)
     {
         if (SettingsMenu.IsGameplayBlocked || controller == null || !controller.enabled || deltaTime <= 0f) return;

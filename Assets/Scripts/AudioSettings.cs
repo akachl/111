@@ -2,7 +2,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-/// <summary>复用已有混音服务和偏好键，将音乐与音效滑块同步到混音器。</summary>
 public sealed class AudioSettings : MonoBehaviour
 {
     public Slider musicSlider;

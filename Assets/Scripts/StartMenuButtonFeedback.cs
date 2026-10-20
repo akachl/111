@@ -3,7 +3,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-/// <summary>通过柔和背景和金色下划线呈现按钮悬停与键盘焦点，不改变布局。</summary>
 [DisallowMultipleComponent]
 public sealed class StartMenuButtonFeedback : MonoBehaviour,
     IPointerEnterHandler, IPointerExitHandler, ISelectHandler, IDeselectHandler
