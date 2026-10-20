@@ -20,7 +20,7 @@
 
 [![《星屿》玩法演示封面](docs/media/xingyu-demo-cover.jpg)](docs/media/xingyu-demo.mp4)
 
-[查看演示视频](docs/media/xingyu-demo.mp4) · [下载 MP4](https://github.com/akachl/111/raw/refs/heads/main/docs/media/xingyu-demo.mp4)
+[查看演示视频](docs/media/xingyu-demo.mp4) · [下载 MP4](https://github.com/akachl/xingyu/raw/refs/heads/main/docs/media/xingyu-demo.mp4)
 
 视频约 51 秒，展示开始菜单、设置、第一人称移动、星尘记忆收集、灯塔点亮及岛屿传送。公开视频裁去了编辑器外框，未保留原始录音和媒体附带信息；画面为开发中的玩法原型。
 
@@ -76,7 +76,7 @@
 1. 将仓库克隆到本地，或下载 ZIP 后解压：
 
    ```bash
-   git clone https://github.com/akachl/111.git Xingyu
+   git clone https://github.com/akachl/xingyu.git Xingyu
    ```
 
 2. 在 Unity Hub 中添加克隆后的项目目录，建议使用工程记录的 **Unity 2022.3.62f2c1** 打开。
